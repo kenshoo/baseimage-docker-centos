@@ -1,1 +1,1 @@
-For the Changelog, please see [Releases](https://github.com/phusion/baseimage-docker/releases) on GitHub
+For the Changelog, please see [Releases](https://github.com/waystome-systems/baseimage-docker-centos/releases) on GitHub
