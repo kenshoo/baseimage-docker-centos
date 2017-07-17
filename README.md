@@ -11,7 +11,7 @@ Baseimage-docker is a special [Docker](https://www.docker.com) image that is con
 
 You can use it as a base for your own Docker images.
 
-Baseimage-docker is available for pulling from [the Docker registry](https://registry.hub.docker.com/u/waystone-systems/baseimage-centos/)!
+Baseimage-docker is available for pulling from [the Docker registry](https://registry.hub.docker.com/u/waystonesystems/baseimage-centos/)!
 
 ### What are the problems with the stock Centos base image?
 
@@ -121,7 +121,7 @@ It follows that Baseimage-docker also does not deny the Docker philosophy. In fa
 
 To look around in the image, run:
 
-    docker run --rm -t -i waystone-systems/baseimage-centos:<VERSION> /sbin/my_init -- bash -l
+    docker run --rm -t -i waystonesystems/baseimage-centos:<VERSION> /sbin/my_init -- bash -l
 
 where `<VERSION>` is [one of the baseimage-docker version numbers](https://github.com/waystome-systems/baseimage-docker-centos/blob/master/Changelog.md).
 
