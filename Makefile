@@ -1,5 +1,5 @@
-NAME = waystone-systems/baseimage-centos
-VERSION = 0.9.22
+NAME = waystonesystems/baseimage-centos
+VERSION = 0.1.0
 
 .PHONY: all build test tag_latest release ssh
 
