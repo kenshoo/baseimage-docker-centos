@@ -6,7 +6,7 @@ set -x
 SYSLOG_NG_BUILD_PATH=/bd_build/services/syslog-ng
 
 ## Install a syslog daemon.
-$yum_install syslog-ng-core
+$yum_install syslog-ng
 mkdir /etc/service/syslog-ng
 cp $SYSLOG_NG_BUILD_PATH/syslog-ng.runit /etc/service/syslog-ng/run
 mkdir -p /var/lib/syslog-ng

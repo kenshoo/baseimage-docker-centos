@@ -3,7 +3,7 @@ set -e
 source /bd_build/buildconfig
 set -x
 
-$yum_install cron
+$yum_install cronie
 mkdir /etc/service/cron
 chmod 600 /etc/crontab
 cp /bd_build/services/cron/cron.runit /etc/service/cron/run

@@ -39,6 +39,7 @@ echo -n no > /etc/container_environment/INITRD
 
 ## Upgrade all packages.
 #apt-get dist-upgrade -y --no-install-recommends -o Dpkg::Options::="--force-confold"
+rpm -Uvh https://dl.fedoraproject.org/pub/epel/epel-release-latest-7.noarch.rpm
 yum update -y
 
 ## Fix locale.
