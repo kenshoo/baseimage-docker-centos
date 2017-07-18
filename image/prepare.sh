@@ -29,20 +29,20 @@ echo -n no > /etc/container_environment/INITRD
 #ln -sf /bin/true /usr/bin/ischroot
 
 ## apt-utils fix for Ubuntu 16.04
-#$minimal_apt_get_install apt-utils
+#$yum_install apt-utils
 #
 ### Install HTTPS support for APT.
-#$minimal_apt_get_install apt-transport-https ca-certificates
+#$yum_install apt-transport-https ca-certificates
 
 ## Install add-apt-repository
-#$minimal_apt_get_install software-properties-common
+#$yum_install software-properties-common
 
 ## Upgrade all packages.
 #apt-get dist-upgrade -y --no-install-recommends -o Dpkg::Options::="--force-confold"
 yum update -y
 
 ## Fix locale.
-#$minimal_apt_get_install language-pack-en
+#$yum_install language-pack-en
 #locale-gen en_US
 #update-locale LANG=en_US.UTF-8 LC_CTYPE=en_US.UTF-8
 echo -n en_US.UTF-8 > /etc/container_environment/LANG
