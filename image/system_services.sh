@@ -19,8 +19,7 @@ chmod 640 /etc/container_environment.sh /etc/container_environment.json
 ln -s /etc/container_environment.sh /etc/profile.d/
 
 ## Install runit.
-curl -s https://packagecloud.io/install/repositories/imeyer/runit/script.rpm.sh | bash
-$minimal_apt_get_install runit-2.1.1-7.el7.centos.x86_64
+rpm -Uvh https://packagecloud.io/imeyer/runit/packages/el/7/runit-2.1.1-7.el7.centos.x86_64.rpm/download
 ln -s -t /usr/bin /sbin/sv
 ln -s -t /usr/bin /sbin/runsvdir
 
