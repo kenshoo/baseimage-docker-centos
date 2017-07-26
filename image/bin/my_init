@@ -114,8 +114,10 @@ def export_envvars(to_dir=True):
         shell_dump += "export " + sanitize_shenvname(name) + "=" + shquote(value) + "\n"
     with open("/etc/container_environment.sh", "w") as f:
         f.write(shell_dump)
+    os.chmod("/etc/container_environment.sh", 0755)
     with open("/etc/container_environment.json", "w") as f:
         f.write(json.dumps(dict(os.environ)))
+    os.chmod("/etc/container_environment.json", 0644)
 
 
 def shquote(s):
