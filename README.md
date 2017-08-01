@@ -1,8 +1,5 @@
 # A minimal Centos base image modified for Docker-friendliness (Forked from [phusion/baseimage-docker](https://github.com/phusion/baseimage-docker))
 
-
-# THIS FORK IS CURRENTLY EXPERIMENTAL.
-
 Baseimage-docker is a special [Docker](https://www.docker.com) image that is configured for correct use within Docker containers. It is Centos, plus:
 
  * Modifications for Docker-friendliness.
@@ -13,9 +10,9 @@ You can use it as a base for your own Docker images.
 
 Baseimage-docker is available for pulling from [the Docker registry](https://registry.hub.docker.com/u/waystonesystems/baseimage-centos/)!
 
-### What are the problems with the stock Centos base image?
+### What are the problems with the stock Centos 7 base image?
 
-Centos is not designed to be run inside Docker. Its init system, systemd, assumes that it's running on either real hardware or virtualized hardware, but not inside a Docker container (without hacky workarounds). But inside a container you don't want a full system; you want a minimal system.  Configuring that minimal system for use within a container has many strange corner cases that are hard to get right if you are not intimately familiar with the Unix system model. This can cause a lot of strange problems.
+Centos 7 is not designed to be run inside Docker. Its init system, systemd, assumes that it's running on either real hardware or virtualized hardware, but not inside a Docker container. There are hacky workarounds (such as running the container with --privileges), but instead we have opted for a lightweight init system and a minimal system. 
 
 Baseimage-docker gets everything right. The "Contents" section describes all the things that it modifies.
 
@@ -32,8 +29,8 @@ You can configure the stock `centos` image yourself from your Dockerfile, so why
 -----------------------------------------
 
 **Related resources**:
-  [Website](http://phusion.github.io/baseimage-docker/) |
-  [Github](https://github.com/waystome-systems/baseimage-docker-centos) |
+  [Upstream Website](http://phusion.github.io/baseimage-docker/) |
+  [Github](https://github.com/waystone-systems/baseimage-docker-centos) |
   [Docker registry](https://index.docker.io/u/phusion/baseimage/) |
   [Discussion forum](https://groups.google.com/d/forum/passenger-docker) |
   [Twitter](https://twitter.com/phusion_nl) |
@@ -45,8 +42,8 @@ You can configure the stock `centos` image yourself from your Dockerfile, so why
    * [Overview](#whats_inside_overview)
    * [Wait, I thought Docker is about running a single process in a container?](#docker_single_process)
    * [Does Baseimage-docker advocate "fat containers" or "treating containers as VMs"?](#fat_containers)
- * [Inspecting baseimage-docker](#inspecting)
- * [Using baseimage-docker as base image](#using)
+ * [Inspecting baseimage-docker-centos](#inspecting)
+ * [Using baseimage-docker-centos as base image](#using)
    * [Getting started](#getting_started)
    * [Adding additional daemons](#adding_additional_daemons)
    * [Running scripts during container startup](#running_startup_scripts)
@@ -89,7 +86,7 @@ You can configure the stock `centos` image yourself from your Dockerfile, so why
 | Fixes APT incompatibilities with Docker | See https://github.com/dotcloud/docker/issues/1024. |
 | syslog-ng | A syslog daemon is necessary so that many services - including the kernel itself - can correctly log to /var/log/syslog. If no syslog daemon is running, a lot of important messages are silently swallowed. <br><br>Only listens locally. All syslog messages are forwarded to "docker logs".<br><br>Why syslog-ng?<br>I've had bad experience with rsyslog. I regularly run into bugs with rsyslog, and once in a while it takes my log host down by entering a 100% CPU loop in which it can't do anything. Syslog-ng seems to be much more stable. |
 | logrotate | Rotates and compresses logs on a regular basis. |
-| SSH server | Allows you to easily login to your container to [inspect or administer](#login_ssh) things. <br><br>_SSH is **disabled by default** and is only one of the methods provided by baseimage-docker for this purpose. The other method is through [docker exec](#login_docker_exec). SSH is also provided as an alternative because `docker exec` comes with several caveats._<br><br>Password and challenge-response authentication are disabled by default. Only key authentication is allowed. |
+| SSH server | Allows you to easily login to your container to [inspect or administer](#login_ssh) things. <br><br>_SSH is **disabled by default** and is only one of the methods provided by baseimage-docker-centos for this purpose. The other method is through [docker exec](#login_docker_exec). SSH is also provided as an alternative because `docker exec` comes with several caveats._<br><br>Password and challenge-response authentication are disabled by default. Only key authentication is allowed. |
 | cron | The cron daemon must be running for cron jobs to work. |
 | [runit](http://smarden.org/runit/) | Replaces centos 7's systemd. Used for service supervision and management. Much easier to use than SysV init and supports restarting daemons when they crash. Much easier to use and more lightweight than Upstart. |
 | `setuser` | A tool for running a command as another user. Easier to use than `su`, has a smaller attack vector than `sudo`, and unlike `chpst` this tool sets `$HOME` correctly. Available as `/sbin/setuser`. |
@@ -117,31 +114,31 @@ The Docker developers advocate running a single *logical service* inside a singl
 It follows that Baseimage-docker also does not deny the Docker philosophy. In fact, many of the modifications we introduce are explicitly in line with the Docker philosophy. For example, using environment variables to pass parameters to containers is very much the "Docker way", and providing [a mechanism to easily work with environment variables](#environment_variables) in the presence of multiple processes that may run as different users.
 
 <a name="inspecting"></a>
-## Inspecting baseimage-docker
+## Inspecting baseimage-docker-centos
 
 To look around in the image, run:
 
     docker run --rm -t -i waystonesystems/baseimage-centos:<VERSION> /sbin/my_init -- bash -l
 
-where `<VERSION>` is [one of the baseimage-docker version numbers](https://github.com/waystome-systems/baseimage-docker-centos/blob/master/Changelog.md).
+where `<VERSION>` is [one of the baseimage-docker-centos version numbers](https://github.com/waystone-systems/baseimage-docker-centos/blob/master/Changelog.md).
 
 You don't have to download anything manually. The above command will automatically pull the image from the Docker registry.
 
 <a name="using"></a>
-## Using baseimage-docker as base image
+## Using baseimage-docker-centos as base image
 
 <a name="getting_started"></a>
 ### Getting started
 
-The image is called `phusion/baseimage`, and is available on the Docker registry.
+The image is called `waystonesystems/baseimage-centos`, and is available on the Docker registry.
 
-    # Use phusion/baseimage as base image. To make your builds reproducible, make
+    # Use waystonesystems/baseimage-centos as base image. To make your builds reproducible, make
     # sure you lock down to a specific version, not to `latest`!
-    # See https://github.com/waystome-systems/baseimage-docker-centos/blob/master/Changelog.md for
+    # See https://github.com/waystone-systems/baseimage-docker-centos/blob/master/Changelog.md for
     # a list of version numbers.
-    FROM phusion/baseimage:<VERSION>
+    FROM waystonesystems/baseimage-centos:<VERSION>
 
-    # Use baseimage-docker's init system.
+    # Use baseimage-docker-centos's init system.
     CMD ["/sbin/my_init"]
 
     # ...put your own build instructions here...
@@ -176,7 +173,7 @@ Note that the shell script must run the daemon **without letting it daemonize/fo
 <a name="running_startup_scripts"></a>
 ### Running scripts during container startup
 
-The baseimage-docker init system, `/sbin/my_init`, runs the following scripts during startup, in the following order:
+The baseimage-docker-centos init system, `/sbin/my_init`, runs the following scripts during startup, in the following order:
 
  * All executable scripts in `/etc/my_init.d`, if this directory exists. The scripts are run in lexicographic order.
  * The script `/etc/rc.local`, if this file exists.
@@ -222,7 +219,7 @@ If you use `/sbin/my_init` as the main container command, then any environment v
  * Environment variables on Unix are inherited on a per-process basis. This means that it is generally not possible for a child process to change the environment variables of other processes.
  * Because of the aforementioned point, there is no good central place for defining environment variables for all applications and services. Debian has the `/etc/environment` file but it only works in some situations.
  * Some services change environment variables for child processes. Nginx is one such example: it removes all environment variables unless you explicitly instruct it to retain them through the `env` configuration option. If you host any applications on Nginx (e.g. using the [passenger-docker](https://github.com/phusion/passenger-docker) image, or using Phusion Passenger in your own image) then they will not see the environment variables that were originally passed by Docker.
- * We ignore HOME, SHELL, USER and a bunch of other environment variables on purpose, because _not_ ignoring them will break multi-user containers. See https://github.com/waystome-systems/baseimage-docker-centos/pull/86 -- A workaround for setting the `HOME` environment variable looks like this: `RUN echo /root > /etc/container_environment/HOME`. See https://github.com/waystome-systems/baseimage-docker-centos/issues/119
+ * We ignore HOME, SHELL, USER and a bunch of other environment variables on purpose, because _not_ ignoring them will break multi-user containers. See https://github.com/waystone-systems/baseimage-docker-centos/pull/86 -- A workaround for setting the `HOME` environment variable looks like this: `RUN echo /root > /etc/container_environment/HOME`. See https://github.com/phusion/baseimage-docker/issues/119
 
 `my_init` provides a solution for all these caveats.
 
@@ -370,14 +367,14 @@ Both way have their own pros and cons, which you can learn in their respective s
 <a name="login_docker_exec"></a>
 ### Login to the container, or running a command inside it, via `docker exec`
 
-You can use the `docker exec` tool on the Docker host OS to login to any container that is based on baseimage-docker. You can also use it to run a command inside a running container. `docker exec` works by using Linux kernel system calls.
+You can use the `docker exec` tool on the Docker host OS to login to any container that is based on baseimage-docker-centos. You can also use it to run a command inside a running container. `docker exec` works by using Linux kernel system calls.
 
 Here's how it compares to [using SSH to login to the container or to run a command inside it](#login_ssh):
 
  * Pros
    * Does not require running an SSH daemon inside the container.
    * Does not require setting up SSH keys.
-   * Works on any container, even containers not based on baseimage-docker.
+   * Works on any container, even containers not based on baseimage-docker-centos.
  * Cons
    * If the `docker exec` process on the host is terminated by a signal (e.g. with the `kill` command or even with Ctrl-C), then the command that is executed by `docker exec` is *not* killed and cleaned up. You will either have to do that manually, or you have to run `docker exec` with `-t -i`.
    * Requires privileges on the Docker host to be able to access the Docker daemon. Note that anybody who can access the Docker daemon effectively has root access.
@@ -405,15 +402,15 @@ To open a bash session inside the container, you must pass `-t -i` so that a ter
 <a name="login_ssh"></a>
 ### Login to the container, or running a command inside it, via SSH
 
-You can use SSH to login to any container that is based on baseimage-docker. You can also use it to run a command inside a running container.
+You can use SSH to login to any container that is based on baseimage-docker-centos. You can also use it to run a command inside a running container.
 
 Here's how it compares to [using `docker exec` to login to the container or to run a command inside it](#login_docker_exec):
 
  * Pros
    * Does not require root privileges on the Docker host.
-   * Allows you to let users login to the container, without letting them login to the Docker host. However, this is not enabled by default because baseimage-docker does not expose the SSH server to the public Internet by default.
+   * Allows you to let users login to the container, without letting them login to the Docker host. However, this is not enabled by default because baseimage-docker-centos does not expose the SSH server to the public Internet by default.
  * Cons
-   * Requires setting up SSH keys. However, baseimage-docker makes this easy for many cases through a pregenerated, insecure key. Read on to learn more.
+   * Requires setting up SSH keys. However, baseimage-docker-centos makes this easy for many cases through a pregenerated, insecure key. Read on to learn more.
 
 <a name="enabling_ssh"></a>
 #### Enabling SSH
@@ -422,7 +419,7 @@ Baseimage-docker disables the SSH server by default. Add the following to your D
 
     RUN rm -f /etc/service/sshd/down
 
-    # Regenerate SSH host keys. baseimage-docker does not contain any, so you
+    # Regenerate SSH host keys. baseimage-docker-centos does not contain any, so you
     # have to do that yourself. You may also comment out this instruction; the
     # init system will auto-generate one during boot.
     RUN /etc/my_init.d/00_regen_ssh_host_keys.sh
@@ -443,7 +440,7 @@ This will initialize sshd on container boot.  You can then access it with the in
 <a name="ssh_keys"></a>
 #### About SSH keys
 
-First, you must ensure that you have the right SSH keys installed inside the container. By default, no keys are installed, so nobody can login. For convenience reasons, we provide [a pregenerated, insecure key](https://github.com/waystome-systems/baseimage-docker-centos/blob/master/image/services/sshd/keys/insecure_key) [(PuTTY format)](https://github.com/waystome-systems/baseimage-docker-centos/blob/master/image/services/sshd/keys/insecure_key.ppk) that you can easily enable. However, please be aware that using this key is for convenience only. It does not provide any security because this key (both the public and the private side) is publicly available. **In production environments, you should use your own keys**.
+First, you must ensure that you have the right SSH keys installed inside the container. By default, no keys are installed, so nobody can login. For convenience reasons, we provide [a pregenerated, insecure key](https://github.com/waystone-systems/baseimage-docker-centos/blob/master/image/services/sshd/keys/insecure_key) [(PuTTY format)](https://github.com/waystone-systems/baseimage-docker-centos/blob/master/image/services/sshd/keys/insecure_key.ppk) that you can easily enable. However, please be aware that using this key is for convenience only. It does not provide any security because this key (both the public and the private side) is publicly available. **In production environments, you should use your own keys**.
 
 <a name="using_the_insecure_key_for_one_container_only"></a>
 #### Using the insecure key for one container only
@@ -465,7 +462,7 @@ Once you have the ID, look for its IP address with:
 Now that you have the IP address, you can use SSH to login to the container, or to execute a command inside it:
 
     # Download the insecure private key
-    curl -o insecure_key -fSL https://github.com/waystome-systems/baseimage-docker-centos/raw/master/image/services/sshd/keys/insecure_key
+    curl -o insecure_key -fSL https://github.com/waystone-systems/baseimage-docker-centos/raw/master/image/services/sshd/keys/insecure_key
     chmod 600 insecure_key
 
     # Login to the container
@@ -521,9 +518,9 @@ Looking up the IP of a container and running an SSH command quickly becomes tedi
 
 First, install the tool on the Docker host:
 
-    curl --fail -L -O https://github.com/waystome-systems/baseimage-docker-centos/archive/master.tar.gz && \
+    curl --fail -L -O https://github.com/waystone-systems/baseimage-docker-centos/archive/master.tar.gz && \
     tar xzf master.tar.gz && \
-    sudo ./baseimage-docker-master/install-tools.sh
+    sudo ./baseimage-docker-centos-master/install-tools.sh
 
 Then run the tool as follows to login to a container using SSH:
 
@@ -543,8 +540,8 @@ If for whatever reason you want to build the image yourself instead of downloadi
 
 Clone this repository:
 
-    git clone https://github.com/waystome-systems/baseimage-docker-centos.git
-    cd baseimage-docker
+    git clone https://github.com/waystone-systems/baseimage-docker-centos.git
+    cd baseimage-docker-centos
 
 Start a virtual machine with Docker in it. You can use the Vagrantfile that we've already provided.
 
@@ -563,7 +560,7 @@ If you want to call the resulting image something else, pass the NAME variable, 
 <a name="removing_optional_services"></a>
 ### Removing optional services
 
-The default baseimage-docker installs `syslog-ng`, `cron` and `sshd` services during the build process.
+The default baseimage-docker-centos installs `syslog-ng`, `cron` and `sshd` services during the build process.
 
 In case you don't need one or more of these services in your image, you can disable its installation.
 
@@ -578,14 +575,3 @@ As shown in the following example, to prevent `sshd` from being installed into y
     export DISABLE_CRON=0
 
 Then you can proceed with `make build` command.
-
-<a name="conclusion"></a>
-## Conclusion
-
- * Using baseimage-docker? [Tweet about us](https://twitter.com/share) or [follow us on Twitter](https://twitter.com/phusion_nl).
- * Having problems? Want to participate in development? Please post a message at [the discussion forum](https://groups.google.com/d/forum/passenger-docker).
- * Looking for a more complete base image, one that is ideal for Ruby, Python, Node.js and Meteor web apps? Take a look at [passenger-docker](https://github.com/phusion/passenger-docker).
-
-[<img src="http://www.phusion.nl/assets/logo.png">](http://www.phusion.nl/)
-
-Please enjoy baseimage-docker, a product by [Phusion](http://www.phusion.nl/). :-)

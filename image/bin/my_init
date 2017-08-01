@@ -91,7 +91,7 @@ def import_envvars(clear_existing_environment=True, override_existing_environmen
         with open("/etc/container_environment/" + envfile, "r") as f:
             # Text files often end with a trailing newline, which we
             # don't want to include in the env variable value. See
-            # https://github.com/waystome-systems/baseimage-docker-centos/pull/49
+            # https://github.com/waystone-systems/baseimage-docker-centos/pull/49
             value = re.sub('\n\Z', '', f.read())
         new_env[name] = value
     if clear_existing_environment:
@@ -157,7 +157,7 @@ def waitpid_reap_other_children(pid):
     status = None
     while not done:
         try:
-            # https://github.com/waystome-systems/baseimage-docker-centos/issues/151#issuecomment-92660569
+            # https://github.com/waystone-systems/baseimage-docker-centos/issues/151#issuecomment-92660569
             this_pid, status = os.waitpid(pid, os.WNOHANG)
             if this_pid == 0:
                 this_pid, status = os.waitpid(-1, 0)
@@ -317,7 +317,7 @@ def wait_for_runit_services():
         done = os.system("/usr/bin/sv status /etc/service/* | grep -q '^run:'") != 0
         if not done:
             time.sleep(0.1)
-            # According to https://github.com/waystome-systems/baseimage-docker-centos/issues/315
+            # According to https://github.com/waystone-systems/baseimage-docker-centos/issues/315
             # there is a bug or race condition in Runit, causing it
             # not to shutdown services that are already being started.
             # So during shutdown we repeatedly instruct Runit to shutdown
