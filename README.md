@@ -575,4 +575,3 @@ As shown in the following example, to prevent `sshd` from being installed into y
     export DISABLE_CRON=0
 
 Then you can proceed with `make build` command.
-
